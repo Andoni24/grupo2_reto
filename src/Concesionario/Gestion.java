@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Gestion {
 
@@ -53,7 +54,6 @@ public class Gestion {
 			camion = new Camion(rs.getString(1),rs.getString(2),rs.getString(3),rs.getInt(8),rs.getDouble(4),rs.getInt(5),rs.getInt(6), rs.getString(7));
 			vehic.add(camion);
 		}
-		rs.close();
 		return vehic;
 	}
 	
@@ -177,12 +177,11 @@ private static void importarCamion(Connection cn) throws SQLException{
 			System.out.println();
 			System.out.println("Coche Seleccionado");
 			System.out.println(cocheMod.toString());
-			System.out.println("Introduzca el apartado que desea modificar");
-			System.out.println("1. color");
-			System.out.println("2. precio");
-			System.out.println("3. Numero de asientos");
-			System.out.println("4. Capacidad de maletero");
-			System.out.println("5. Numero de puertas");
+			System.out.println("Introduzca el numero del apartado que desea modificar");
+			System.out.println("1. precio");
+			System.out.println("2. Numero de asientos");
+			System.out.println("3. Capacidad de maletero");
+			System.out.println("4. Numero de puertas");
 			modificacion = Console.readInt();
 			gs.AlterarCoche(modificacion, cocheMod);
 		}catch(NullPointerException e) {
@@ -211,12 +210,11 @@ private static void importarCamion(Connection cn) throws SQLException{
 			System.out.println();
 			System.out.println("Coche Seleccionado");
 			System.out.println(camionMod.toString());
-			System.out.println("Introduzca el apartado que desea modificar");
-			System.out.println("1. color");
-			System.out.println("2. precio");
-			System.out.println("3. Numero de asientos");
-			System.out.println("4. Capacidad de maletero");
-			System.out.println("5. Numero de puertas");
+			System.out.println("Introduzca el numero del apartado que desea modificar");
+			System.out.println("1. precio");
+			System.out.println("2. Numero de asientos");
+			System.out.println("3. Cantidad de carga");
+			System.out.println("4. Tipo de mercancia");
 			modificacion = Console.readInt();
 			gs.AlterarCamion(modificacion, camionMod);
 		}catch(NullPointerException e) {
@@ -225,6 +223,66 @@ private static void importarCamion(Connection cn) throws SQLException{
 			System.out.println("Opción no válida");
 		}
 		
+	}
+	
+	public static void pintarCoche(Connection c) {
+		try {
+			ArrayList <Coche> coches = new ArrayList<Coche>();
+			coches = cochesStock(c);
+			String matricula;
+			Coche cocheMod;
+			String colorNue;
+			Gestor gs = new Gestor(c);
+			for(Coche i: coches) {
+				System.out.println(i.toString());
+				System.out.println();
+			}
+			System.out.println("Introduzca la matricula del coche que desea modificar");
+			matricula = Console.readString();
+			cocheMod = gs.elegirCoche(matricula);
+			System.out.println("Introduzca el nuevo color");
+			colorNue = Console.readString();
+			gs.pintarCoche(colorNue, cocheMod);
+			
+		}catch(NullPointerException e) {
+			System.out.println("No existe el vehiculo");
+		}catch(SQLException e) {
+			System.out.println("Opción no válida");
+		}
+	}
+	
+	public static void pintarCamion(Connection c) {
+		try {
+			ArrayList <Camion> camiones = new ArrayList<Camion>();
+			camiones = camionesStock(c);
+			String matricula;
+			Camion camionMod;
+			String colorNue;
+			Gestor gs = new Gestor(c);
+			for(Camion i: camiones) {
+				System.out.println(i.toString());
+				System.out.println();
+			}
+			System.out.println("Introduzca la matricula del coche que desea modificar");
+			matricula = Console.readString();
+			camionMod = gs.elegirCamion(matricula);
+			System.out.println("Introduzca el nuevo color");
+			colorNue = Console.readString();
+			gs.pintarCamion(colorNue, camionMod);
+			
+		}catch(NullPointerException e) {
+			System.out.println("No existe el vehiculo");
+		}catch(SQLException e) {
+			System.out.println("Opción no válida");
+		}
+	}
+	
+	public static Vehiculo ventas(Connection c) {
+		
+		String fechaInicio;
+		String fechaFin;
+	
+	return null;		
 	}
 	
 	public static void main(String[] args)  {
@@ -244,10 +302,11 @@ private static void importarCamion(Connection cn) throws SQLException{
 				System.out.println("1. Visualizar vehiculos");
 				System.out.println("2. Adquirir vehiculo");
 				System.out.println("3. Vender vehiculo");
-				System.out.println("4. Modificar datos del vehiculo");
-				System.out.println("5. Ver repintado");
-				System.out.println("6. Consultar ventas");
-				System.out.println("7. Salir");
+				System.out.println("4. Pintar vehiculo");
+				System.out.println("5. Modificar datos del vehiculo");
+				System.out.println("6. Ver repintado");
+				System.out.println("7. Consultar ventas");
+				System.out.println("8. Salir");
 				System.out.println();
 				
 				elec = Console.readInt();
@@ -322,6 +381,25 @@ private static void importarCamion(Connection cn) throws SQLException{
 					break;
 				case 4:
 					try {
+						System.out.println("Desea pintar un coche o un camion?");
+						String respuesta = Console.readString();
+						
+						if (respuesta.equalsIgnoreCase("coche")) {
+							pintarCoche(cn);
+						}else if (respuesta.equalsIgnoreCase("camion")){
+							pintarCamion(cn);
+						}else {
+							throw new VehiculoException("No se ha establecido bien el tipo de vehiculo");
+						}
+						System.out.println("Vehiculo pintado");
+					}catch(VehiculoException e){
+						System.out.println(e.getMessage());
+					}catch(NumberFormatException e) {
+						System.out.println(e.getMessage());
+					}
+					break;
+				case 5:
+					try {
 						System.out.println("quieres modificar un coche o un camion?");
 						String respuesta = Console.readString();
 						
@@ -340,11 +418,11 @@ private static void importarCamion(Connection cn) throws SQLException{
 					System.out.println(e.getMessage());
 				}
 					break;
-				case 5:
-					break;
 				case 6:
 					break;
 				case 7:
+					break;
+				case 8:
 					break;
 				default:
 					System.out.println("Elección no valida");
@@ -354,7 +432,7 @@ private static void importarCamion(Connection cn) throws SQLException{
 			}
 			
 		
-		}while(elec!=7);
+		}while(elec!=8);
 	}
 
 

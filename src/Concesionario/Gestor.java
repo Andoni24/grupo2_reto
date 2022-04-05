@@ -1,10 +1,12 @@
 package Concesionario;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
 public class Gestor {
@@ -128,7 +130,6 @@ public class Gestor {
 		ps.setString(1, this.serie.getMarca());
 		ps.setString(2, this.serie.getModelo());
 		ps.setInt(3, this.serie.getAnioFab());
-		ps.close();
 		if(ps.executeUpdate()!=1) {
 			return "Error en la insercción";
 		}
@@ -255,35 +256,49 @@ public class Gestor {
 		return camion;
 		}
 	
+	public void pintarCoche(String nuevoColor,Coche c) {
+		try {
+			PreparedStatement ps=null;
+			ps = this.c.prepareStatement("UPDATE coche SET color"+" = "+"'"+nuevoColor+"'" +" WHERE matricula like '"+c.getMatricula()+"'");
+	        ps.executeUpdate();
+		}catch(SQLException e ) {
+			System.out.println("Fallo al pintar");
+		}
+	}
+	
+	public void pintarCamion(String nuevoColor,Camion c) {
+		try {
+			PreparedStatement ps=null;
+			ps = this.c.prepareStatement("UPDATE camion SET color"+" = "+"'"+nuevoColor+"'" +" WHERE matricula like '"+c.getMatricula()+"'");
+	        ps.executeUpdate();
+		}catch(SQLException e ) {
+			System.out.println("Fallo al pintar");
+		}
+	}
+	
 	public void AlterarCoche(int mod,Coche c) {
 		try {
 			PreparedStatement ps=null;
 			switch(mod) {
 			case 1:
-				System.out.println("Introduce nuevo color");
-				String color = Console.readString();
-				ps = this.c.prepareStatement("UPDATE coche SET color"+" = "+"'"+color+"'" +" WHERE matricula like '"+c.getMatricula()+"'");
-		        ps.executeUpdate();
-				break;
-			case 2:
 				System.out.println("Introduce nuevo precio");
 				double precio = Console.readDouble();
 				ps = this.c.prepareStatement("UPDATE coche SET precio"+" = "+precio +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
-			case 3:
+			case 2:
 				System.out.println("Introduce nueva cantidad de asientos");
 				int numAsientos = Console.readInt();
 				ps = this.c.prepareStatement("UPDATE coche SET numAsientos"+" = "+numAsientos +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
-			case 4:
+			case 3:
 				System.out.println("Introduce nueva capacidad de maletero");
 				int capMaletero = Console.readInt();
 				ps = this.c.prepareStatement("UPDATE coche SET capMaletero"+" = "+capMaletero +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
-			case 5:
+			case 4:
 				System.out.println("Introduce nueva cantidad de puertas");
 				int numPuertas = Console.readInt();
 				ps = this.c.prepareStatement("UPDATE coche SET numPuertas"+" = "+numPuertas +" WHERE matricula like '"+c.getMatricula()+"'");
@@ -305,37 +320,31 @@ public class Gestor {
 			PreparedStatement ps=null;
 			switch(mod) {
 			case 1:
-				System.out.println("Introduce nuevo color");
-				String color = Console.readString();
-				ps = this.c.prepareStatement("UPDATE coche SET color"+" = "+"'"+color+"'" +" WHERE matricula like '"+c.getMatricula()+"'");
-		        ps.executeUpdate();
-				break;
-			case 2:
 				System.out.println("Introduce nuevo precio");
 				double precio = Console.readDouble();
-				ps = this.c.prepareStatement("UPDATE coche SET precio"+" = "+precio +" WHERE matricula like '"+c.getMatricula()+"'");
+				ps = this.c.prepareStatement("UPDATE camion SET precio"+" = "+precio +" WHERE matricula like '"+c.getMatricula()+"'");
+				ps.executeUpdate();
+				break;
+			case 2:
+				System.out.println("Introduce nueva cantidad de asientos");
+				int numAsientos = Console.readInt();
+				ps = this.c.prepareStatement("UPDATE camion SET numAsientos"+" = "+numAsientos +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
 			case 3:
-				System.out.println("Introduce nueva cantidad de asientos");
-				int numAsientos = Console.readInt();
-				ps = this.c.prepareStatement("UPDATE coche SET numAsientos"+" = "+numAsientos +" WHERE matricula like '"+c.getMatricula()+"'");
+				System.out.println("Introduce nueva cantidad de carga");
+				int carga = Console.readInt();
+				ps = this.c.prepareStatement("UPDATE camion SET carga"+" = "+carga +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
 			case 4:
-				System.out.println("Introduce nueva cantidad de carga");
-				int carga = Console.readInt();
-				ps = this.c.prepareStatement("UPDATE coche SET carga"+" = "+carga +" WHERE matricula like '"+c.getMatricula()+"'");
-				ps.executeUpdate();
-				break;
-			case 5:
 				System.out.println("Introduce nuevo tipo de mercancia (General/Arido/Peligroso)");
 				String tipoMerca = Console.readString();
 				tipoMerca = tipoMerca.substring(0, 1);
 				if(tipoMerca.equalsIgnoreCase("G") || tipoMerca.equalsIgnoreCase("P") || tipoMerca.equalsIgnoreCase("A")) {
 					throw new SQLException("Error");
 				}
-				ps = this.c.prepareStatement("UPDATE coche SET tipoMercancia"+" = "+tipoMerca +" WHERE matricula like '"+c.getMatricula()+"'");
+				ps = this.c.prepareStatement("UPDATE camion SET tipoMercancia"+" = "+tipoMerca +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
 			default:
@@ -347,6 +356,18 @@ public class Gestor {
 		}catch(NumberFormatException e) {
 			System.out.println("no existe esa elección");
 		}
+	}
+	
+	public ArrayList<Vehiculo> ventasTotales() {
+		ArrayList <Vehiculo> vehic = new ArrayList<Vehiculo>();
+		try {
+			CallableStatement cs = this.c.prepareCall("consultaventas(?,?)");
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return vehic;
 	}
 	
 }
