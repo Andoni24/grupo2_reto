@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-
-
 public class Gestion {
 
 	public static int comprobarSerie(Serie s,Connection c) throws SQLException {
@@ -128,6 +126,39 @@ private static void importarCamion(Connection cn) throws SQLException{
 		
 	}
 	
+	private static void venderCamion(Connection cn) throws SQLException {
+		ArrayList<Camion> camiones = new ArrayList<Camion>();
+		Gestor gs = new Gestor(cn);
+		camiones = camionesStock(cn);
+		String matric;
+		
+		for(Camion i: camiones) {
+			System.out.println(i.toString());
+			System.out.println();
+		}
+		System.out.println("Introduzca la matricula del coche que quiere vender");
+		matric = Console.readString();
+		System.out.println(gs.eliminarCamion(matric));
+		
+		}
+		
+
+	private static void venderCoche(Connection cn) throws SQLException{
+		
+		ArrayList<Coche> coches = new ArrayList<Coche>();
+		Gestor gs = new Gestor(cn);
+		coches = cochesStock(cn);
+		String matric;
+		
+		for(Coche i: coches) {
+			System.out.println(i.toString());
+			System.out.println();
+		}
+		System.out.println("Introduzca la matricula del coche que quiere vender");
+		matric = Console.readString();
+		System.out.println(gs.eliminarCoche(matric));
+	}
+	
 	public static void main(String[] args)  {
 	
 		Conexion conexion = new Conexion(); 
@@ -201,7 +232,25 @@ private static void importarCamion(Connection cn) throws SQLException{
 					}
 					break;
 				case 3:
-	
+					try {
+						System.out.println("quieres vender un coche o un camion?");
+						String respuesta = Console.readString();
+						
+						if (respuesta.equalsIgnoreCase("coche")) {
+							venderCoche(cn);
+						
+						}else if (respuesta.equalsIgnoreCase("camion")){
+							venderCamion(cn);
+						}else {
+							throw new VehiculoException("No se ha establecido bien el tipo de vehiculo");
+						}
+					}catch(VehiculoException e){
+						System.out.println(e.getMessage());
+					} catch (SQLException e) {
+						System.out.println(e.getMessage());
+					}catch(NumberFormatException e) {
+						System.out.println(e.getMessage());
+					}
 					break;
 				case 4:
 
