@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
+
 public class Gestion {
 
 	public static int comprobarSerie(Serie s,Connection c) throws SQLException {
@@ -58,7 +59,74 @@ public class Gestion {
 		return vehic;
 	}
 	
+private static void importarCamion(Connection cn) throws SQLException{
+		
+		Camion camion;
+		Gestor gst = new Gestor(cn);
+	
+		System.out.println("Introduce la matricula");
+		String matricula = Console.readString();
+		System.out.println("Introduce el número de Bastidor");
+		String numBastidor = Console.readString();
+		System.out.println("Introduce el color");
+		String color = Console.readString();
+		System.out.println("Introduce la marca del vehiculo");
+		String marca = Console.readString();
+		System.out.println("Introduce el modelo");
+		String modelo = Console.readString();
+		System.out.println("Introduce el año de fabricación");
+		int anioFab = Console.readInt();
+		System.out.println("Introduce el precio");
+		double precio = Console.readDouble();
+		System.out.println("Introduce el número de asientos");
+		int numAsientos = Console.readInt();
+		System.out.println("Cantidad de carga");
+		int carga = Console.readInt();
+		System.out.println("Tipo mercancia (General/Arido/Peligroso)");
+		String tipoMercancia = Console.readString();
+		tipoMercancia = tipoMercancia.substring(0,1).toUpperCase();
+		
+		Serie serie = new Serie(marca,modelo,anioFab);
+		int numSerie = comprobarSerie(serie,cn);
+		camion = new Camion(matricula,numBastidor,color,numSerie,precio,numAsientos,carga,tipoMercancia);
+		System.out.println(gst.insertCamion(camion));
+		
+		
+	}
 
+	private static void inportarCoche(Connection cn) throws SQLException{
+		
+		Coche coche;
+		Gestor gst = new Gestor(cn);
+	
+		System.out.println("Introduce la matricula");
+		String matricula = Console.readString();
+		System.out.println("Introduce el número de Bastidor");
+		String numBastidor = Console.readString();
+		System.out.println("Introduce el color");
+		String color = Console.readString();
+		System.out.println("Introduce la marca del vehiculo");
+		String marca = Console.readString();
+		System.out.println("Introduce el modelo");
+		String modelo = Console.readString();
+		System.out.println("Introduce el año de fabricación");
+		int anioFab = Console.readInt();
+		System.out.println("Introduce el precio");
+		double precio = Console.readDouble();
+		System.out.println("Introduce el número de asientos");
+		int numAsientos = Console.readInt();
+		System.out.println("NumPuertas");
+		int numPuertas = Console.readInt();
+		System.out.println("capMaletero");
+		int capMaletero = Console.readInt();
+		
+		Serie serie = new Serie(marca,modelo,anioFab);
+		int numSerie = comprobarSerie(serie,cn);
+		coche = new Coche(matricula,numBastidor,color,numSerie,precio,numAsientos,capMaletero,numPuertas);
+		System.out.println(gst.insertCoche(coche));
+		
+		
+	}
 	
 	public static void main(String[] args)  {
 	
@@ -111,6 +179,26 @@ public class Gestion {
 					}
 					break;
 				case 2:
+					try {
+						System.out.println("quieres añadir un coche o un camion?");
+						String respuesta = Console.readString();
+						
+						if (respuesta.equalsIgnoreCase("coche")) {
+							inportarCoche(cn);
+				
+						}else if (respuesta.equalsIgnoreCase("camion")){
+							importarCamion(cn);
+				
+						}else {
+							throw new VehiculoException("No se ha establecido bien el tipo de vehiculo");
+						}
+					}catch(VehiculoException e){
+						System.out.println(e.getMessage());
+					} catch (SQLException e) {
+						System.out.println(e.getMessage());
+					}catch(NumberFormatException e) {
+						System.out.println(e.getMessage());
+					}
 					break;
 				case 3:
 	
