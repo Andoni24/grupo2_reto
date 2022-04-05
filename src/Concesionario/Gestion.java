@@ -92,7 +92,7 @@ private static void importarCamion(Connection cn) throws SQLException{
 		
 	}
 
-	private static void inportarCoche(Connection cn) throws SQLException{
+	private static void importarCoche(Connection cn) throws SQLException{
 		
 		Coche coche;
 		Gestor gst = new Gestor(cn);
@@ -159,6 +159,33 @@ private static void importarCamion(Connection cn) throws SQLException{
 		System.out.println(gs.eliminarCoche(matric));
 	}
 	
+	public static void modificarCoche(Connection c) throws SQLException{
+		ArrayList <Coche> coches = new ArrayList<Coche>();
+		coches = cochesStock(c);
+		String matricula;
+		int modificacion;
+		Coche cocheMod;
+		Gestor gs = new Gestor(c);
+		for(Coche i: coches) {
+			System.out.println(i.toString());
+			System.out.println();
+		}
+		System.out.println("Introduzca la matricula del coche que desea modificar");
+		matricula = Console.readString();
+		cocheMod = gs.elegirCoche(matricula);
+		System.out.println();
+		System.out.println("Coche Seleccionado");
+		System.out.println(cocheMod.toString());
+		System.out.println("Introduzca el apartado que desea modificar");
+		System.out.println("1. color");
+		System.out.println("2. precio");
+		System.out.println("3. Numero de asientos");
+		System.out.println("4. Capacidad de maletero");
+		System.out.println("5. Numero de puertas");
+		modificacion = Console.readInt();
+		gs.AlterarCoche(modificacion, cocheMod);
+	}
+	
 	public static void main(String[] args)  {
 	
 		Conexion conexion = new Conexion(); 
@@ -215,7 +242,7 @@ private static void importarCamion(Connection cn) throws SQLException{
 						String respuesta = Console.readString();
 						
 						if (respuesta.equalsIgnoreCase("coche")) {
-							inportarCoche(cn);
+							importarCoche(cn);
 				
 						}else if (respuesta.equalsIgnoreCase("camion")){
 							importarCamion(cn);
@@ -253,7 +280,24 @@ private static void importarCamion(Connection cn) throws SQLException{
 					}
 					break;
 				case 4:
+					try {
+						System.out.println("quieres modificar un coche o un camion?");
+						String respuesta = Console.readString();
+						
+						if (respuesta.equalsIgnoreCase("coche")) {
+							modificarCoche(cn);
+						}else if (respuesta.equalsIgnoreCase("camion")){
 
+						}else {
+							throw new VehiculoException("No se ha establecido bien el tipo de vehiculo");
+						}
+				}catch(VehiculoException e){
+					System.out.println(e.getMessage());
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}catch(NumberFormatException e) {
+					System.out.println(e.getMessage());
+				}
 					break;
 				case 5:
 					break;
