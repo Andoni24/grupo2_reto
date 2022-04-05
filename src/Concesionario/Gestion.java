@@ -160,30 +160,71 @@ private static void importarCamion(Connection cn) throws SQLException{
 	}
 	
 	public static void modificarCoche(Connection c) throws SQLException{
-		ArrayList <Coche> coches = new ArrayList<Coche>();
-		coches = cochesStock(c);
-		String matricula;
-		int modificacion;
-		Coche cocheMod;
-		Gestor gs = new Gestor(c);
-		for(Coche i: coches) {
-			System.out.println(i.toString());
+		try {
+			ArrayList <Coche> coches = new ArrayList<Coche>();
+			coches = cochesStock(c);
+			String matricula;
+			int modificacion;
+			Coche cocheMod;
+			Gestor gs = new Gestor(c);
+			for(Coche i: coches) {
+				System.out.println(i.toString());
+				System.out.println();
+			}
+			System.out.println("Introduzca la matricula del coche que desea modificar");
+			matricula = Console.readString();
+			cocheMod = gs.elegirCoche(matricula);
 			System.out.println();
+			System.out.println("Coche Seleccionado");
+			System.out.println(cocheMod.toString());
+			System.out.println("Introduzca el apartado que desea modificar");
+			System.out.println("1. color");
+			System.out.println("2. precio");
+			System.out.println("3. Numero de asientos");
+			System.out.println("4. Capacidad de maletero");
+			System.out.println("5. Numero de puertas");
+			modificacion = Console.readInt();
+			gs.AlterarCoche(modificacion, cocheMod);
+		}catch(NullPointerException e) {
+			System.out.println("No existe el vehiculo");
+		}catch(NumberFormatException e) {
+			System.out.println("Opción no válida");
 		}
-		System.out.println("Introduzca la matricula del coche que desea modificar");
-		matricula = Console.readString();
-		cocheMod = gs.elegirCoche(matricula);
-		System.out.println();
-		System.out.println("Coche Seleccionado");
-		System.out.println(cocheMod.toString());
-		System.out.println("Introduzca el apartado que desea modificar");
-		System.out.println("1. color");
-		System.out.println("2. precio");
-		System.out.println("3. Numero de asientos");
-		System.out.println("4. Capacidad de maletero");
-		System.out.println("5. Numero de puertas");
-		modificacion = Console.readInt();
-		gs.AlterarCoche(modificacion, cocheMod);
+		
+	}
+	
+	public static void modificarCamion(Connection c) throws SQLException{
+		try {
+			ArrayList <Camion> camiones = new ArrayList<Camion>();
+			camiones = camionesStock(c);
+			String matricula;
+			int modificacion;
+			Camion camionMod;
+			Gestor gs = new Gestor(c);
+			for(Camion i: camiones) {
+				System.out.println(i.toString());
+				System.out.println();
+			}
+			System.out.println("Introduzca la matricula del coche que desea modificar");
+			matricula = Console.readString();
+			camionMod = gs.elegirCamion(matricula);
+			System.out.println();
+			System.out.println("Coche Seleccionado");
+			System.out.println(camionMod.toString());
+			System.out.println("Introduzca el apartado que desea modificar");
+			System.out.println("1. color");
+			System.out.println("2. precio");
+			System.out.println("3. Numero de asientos");
+			System.out.println("4. Capacidad de maletero");
+			System.out.println("5. Numero de puertas");
+			modificacion = Console.readInt();
+			gs.AlterarCamion(modificacion, camionMod);
+		}catch(NullPointerException e) {
+			System.out.println("No existe el vehiculo");
+		}catch(NumberFormatException e) {
+			System.out.println("Opción no válida");
+		}
+		
 	}
 	
 	public static void main(String[] args)  {
@@ -287,7 +328,7 @@ private static void importarCamion(Connection cn) throws SQLException{
 						if (respuesta.equalsIgnoreCase("coche")) {
 							modificarCoche(cn);
 						}else if (respuesta.equalsIgnoreCase("camion")){
-
+							modificarCamion(cn);
 						}else {
 							throw new VehiculoException("No se ha establecido bien el tipo de vehiculo");
 						}

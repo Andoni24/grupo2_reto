@@ -237,6 +237,24 @@ public class Gestor {
 		return coche;
 		}
 	
+	public Camion elegirCamion(String matricula) {
+		Statement stm = null;
+		ResultSet rs = null;
+		Camion camion = null;
+		try {
+			stm = this.c.createStatement();
+			rs = stm.executeQuery("SELECT * from camion where matricula like ("+"'"+matricula+"'"+")");
+			while(rs.next()) {
+				camion = new Camion(rs.getString(1),rs.getString(2),rs.getString(3),rs.getInt(8),rs.getDouble(4),rs.getInt(5),rs.getInt(6),rs.getString(7));
+			}
+			
+		}catch(SQLException e) {
+			System.out.println("Error en la sentencia");
+		}
+		
+		return camion;
+		}
+	
 	public void AlterarCoche(int mod,Coche c) {
 		try {
 			PreparedStatement ps=null;
@@ -244,34 +262,86 @@ public class Gestor {
 			case 1:
 				System.out.println("Introduce nuevo color");
 				String color = Console.readString();
-				ps = this.c.prepareStatement("UPDATE coche SET color"+" = "+"'"+color+"'" +"WHERE matricula like '"+c.getMatricula()+"'");
+				ps = this.c.prepareStatement("UPDATE coche SET color"+" = "+"'"+color+"'" +" WHERE matricula like '"+c.getMatricula()+"'");
 		        ps.executeUpdate();
 				break;
 			case 2:
 				System.out.println("Introduce nuevo precio");
 				double precio = Console.readDouble();
-				ps = this.c.prepareStatement("UPDATE coche SET precio"+" = "+precio +"WHERE matricula like '"+c.getMatricula()+"'");
+				ps = this.c.prepareStatement("UPDATE coche SET precio"+" = "+precio +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
 			case 3:
 				System.out.println("Introduce nueva cantidad de asientos");
 				int numAsientos = Console.readInt();
-				ps = this.c.prepareStatement("UPDATE coche SET numAsientos"+" = "+numAsientos +"WHERE matricula like '"+c.getMatricula()+"'");
+				ps = this.c.prepareStatement("UPDATE coche SET numAsientos"+" = "+numAsientos +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
 			case 4:
 				System.out.println("Introduce nueva capacidad de maletero");
 				int capMaletero = Console.readInt();
-				ps = this.c.prepareStatement("UPDATE coche SET capMaletero"+" = "+capMaletero +"WHERE matricula like '"+c.getMatricula()+"'");
+				ps = this.c.prepareStatement("UPDATE coche SET capMaletero"+" = "+capMaletero +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
 			case 5:
 				System.out.println("Introduce nueva cantidad de puertas");
 				int numPuertas = Console.readInt();
-				ps = this.c.prepareStatement("UPDATE coche SET numPuertas"+" = "+numPuertas +"WHERE matricula like '"+c.getMatricula()+"'");
+				ps = this.c.prepareStatement("UPDATE coche SET numPuertas"+" = "+numPuertas +" WHERE matricula like '"+c.getMatricula()+"'");
 				ps.executeUpdate();
 				break;
+			default:
+				System.out.println("No existe esa opción");
 			}
+			System.out.println("Modificación realizada");
+		}catch(SQLException e){
+			System.out.println("Error en la sentencia");
+		}catch(NumberFormatException e) {
+			System.out.println("no existe esa elección");
+		}
+	}
+	
+	public void AlterarCamion(int mod,Camion c) {
+		try {
+			PreparedStatement ps=null;
+			switch(mod) {
+			case 1:
+				System.out.println("Introduce nuevo color");
+				String color = Console.readString();
+				ps = this.c.prepareStatement("UPDATE coche SET color"+" = "+"'"+color+"'" +" WHERE matricula like '"+c.getMatricula()+"'");
+		        ps.executeUpdate();
+				break;
+			case 2:
+				System.out.println("Introduce nuevo precio");
+				double precio = Console.readDouble();
+				ps = this.c.prepareStatement("UPDATE coche SET precio"+" = "+precio +" WHERE matricula like '"+c.getMatricula()+"'");
+				ps.executeUpdate();
+				break;
+			case 3:
+				System.out.println("Introduce nueva cantidad de asientos");
+				int numAsientos = Console.readInt();
+				ps = this.c.prepareStatement("UPDATE coche SET numAsientos"+" = "+numAsientos +" WHERE matricula like '"+c.getMatricula()+"'");
+				ps.executeUpdate();
+				break;
+			case 4:
+				System.out.println("Introduce nueva cantidad de carga");
+				int carga = Console.readInt();
+				ps = this.c.prepareStatement("UPDATE coche SET carga"+" = "+carga +" WHERE matricula like '"+c.getMatricula()+"'");
+				ps.executeUpdate();
+				break;
+			case 5:
+				System.out.println("Introduce nuevo tipo de mercancia (General/Arido/Peligroso)");
+				String tipoMerca = Console.readString();
+				tipoMerca = tipoMerca.substring(0, 1);
+				if(tipoMerca.equalsIgnoreCase("G") || tipoMerca.equalsIgnoreCase("P") || tipoMerca.equalsIgnoreCase("A")) {
+					throw new SQLException("Error");
+				}
+				ps = this.c.prepareStatement("UPDATE coche SET tipoMercancia"+" = "+tipoMerca +" WHERE matricula like '"+c.getMatricula()+"'");
+				ps.executeUpdate();
+				break;
+			default:
+				System.out.println("No existe esa opción");
+			}
+			System.out.println("Modificación realizada");
 		}catch(SQLException e){
 			System.out.println("Error en la sentencia");
 		}catch(NumberFormatException e) {
