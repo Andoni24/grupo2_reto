@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Gestion {
 
@@ -277,12 +276,75 @@ private static void importarCamion(Connection cn) throws SQLException{
 		}
 	}
 	
-	public static Vehiculo ventas(Connection c) {
+	public static void ventas(Connection c) {
 		
 		String fechaInicio;
 		String fechaFin;
+		ArrayList <Vehiculo> vehiculos = new ArrayList<Vehiculo>();
+		Gestor gs = new Gestor(c);
+		
+		
+		try {
+		System.out.println("Introduce una fecha (YYYY-MM-DD)");
+		fechaInicio = Console.readString();
+		System.out.println("Introduce otra fecha(YYYY-MM-DD)");
+		fechaFin = Console.readString();
 	
-	return null;		
+
+		
+		vehiculos = gs.ventasTotales(fechaInicio,fechaFin);
+		
+		for(Vehiculo i: vehiculos) {
+			System.out.println(i.toString());
+			System.out.println("---------------------------");
+		}
+		
+		}catch(NumberFormatException e) {
+			System.out.println("Error");
+		}	
+	}
+	
+	public static void verRepintadoCoche(Connection c) {
+		
+		String matricula;
+		Coche vehiculo;
+		Gestor gs = new Gestor(c);
+		
+		try {
+		System.out.println("Introduce una matricula");
+		matricula = Console.readString();
+		vehiculo = gs.elegirCoche(matricula);
+		gs.repintadoCoche(vehiculo);
+		
+		}catch(NumberFormatException e) {
+			System.out.println("Error");
+		}catch(NullPointerException e) {
+			System.out.println("El coche no existe");
+		}	
+	}
+	
+public static void verRepintadoCamion(Connection c) {
+		
+		String matricula;
+		Camion vehiculo;
+		Gestor gs = new Gestor(c);
+		
+		try {
+		System.out.println("Introduce una matricula");
+		matricula = Console.readString();
+		vehiculo = gs.elegirCamion(matricula);
+		gs.repintadoCamion(vehiculo);
+		
+		}catch(NumberFormatException e) {
+			System.out.println("Error");
+		}catch(NullPointerException e) {
+			System.out.println("El camion no existe");
+		}
+	}
+
+	public static void crearXML(Connection c) {
+		Gestor gs = new Gestor(c);
+		gs.exportarXML();
 	}
 	
 	public static void main(String[] args)  {
@@ -306,7 +368,8 @@ private static void importarCamion(Connection cn) throws SQLException{
 				System.out.println("5. Modificar datos del vehiculo");
 				System.out.println("6. Ver repintado");
 				System.out.println("7. Consultar ventas");
-				System.out.println("8. Salir");
+				System.out.println("8. Exportar XML");
+				System.out.println("9. Salir");
 				System.out.println();
 				
 				elec = Console.readInt();
@@ -419,10 +482,29 @@ private static void importarCamion(Connection cn) throws SQLException{
 				}
 					break;
 				case 6:
+					try {
+					System.out.println("quieres ver un coche o un camion?");
+					String respuesta = Console.readString();
+					
+					if (respuesta.equalsIgnoreCase("coche")) {
+						verRepintadoCoche(cn);
+					
+					}else if (respuesta.equalsIgnoreCase("camion")){
+						verRepintadoCamion(cn);
+					}else {
+						throw new VehiculoException("No se ha establecido bien el tipo de vehiculo");
+					}
+					}catch(VehiculoException e){
+						System.out.println(e.getMessage());
+					}
 					break;
 				case 7:
+					ventas(cn);
 					break;
 				case 8:
+					crearXML(cn);
+					break;
+				case 9:
 					break;
 				default:
 					System.out.println("Elección no valida");
@@ -432,7 +514,7 @@ private static void importarCamion(Connection cn) throws SQLException{
 			}
 			
 		
-		}while(elec!=8);
+		}while(elec!=9);
 	}
 
 

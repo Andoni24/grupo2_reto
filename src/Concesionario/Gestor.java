@@ -1,12 +1,17 @@
 package Concesionario;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 
 public class Gestor {
@@ -358,11 +363,19 @@ public class Gestor {
 		}
 	}
 	
-	public ArrayList<Vehiculo> ventasTotales() {
+	public ArrayList<Vehiculo> ventasTotales(String fecha1,String fecha2) {
 		ArrayList <Vehiculo> vehic = new ArrayList<Vehiculo>();
+		Vehiculo vc;
+		ResultSet rs = null;
 		try {
-			CallableStatement cs = this.c.prepareCall("consultaventas(?,?)");
+			PreparedStatement ps = this.c.prepareCall("CALL consulta_ventas(?,?)");
+			ps.setDate(1,java.sql.Date.valueOf(fecha1));
+			ps.setDate(1,java.sql.Date.valueOf(fecha2));
+			rs = ps.executeQuery();
 			
+			while(rs.next());
+			vc = new Vehiculo(rs.getString(3),rs.getString(7),rs.getString(4),rs.getInt(8),rs.getDouble(9),rs.getInt(10));
+			vehic.add(vc);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -370,4 +383,52 @@ public class Gestor {
 		return vehic;
 	}
 	
+	public void repintadoCoche(Coche v) {
+		ResultSet rs = null;
+		try {
+			PreparedStatement ps = this.c.prepareCall("CALL buscar_color(?)");
+			ps.setString(1,v.getMatricula());
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				if(rs!=null) {
+					System.out.println("color viejo: "+ rs.getString(4)+", color nuevo: "+rs.getString(5));
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void repintadoCamion(Camion v) {
+		ResultSet rs = null;
+		try {
+			PreparedStatement ps = this.c.prepareCall("CALL buscar_color(?)");
+			ps.setString(1,v.getMatricula());
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				if(rs!=null) {
+					System.out.println("color viejo: "+ rs.getString(4)+", color nuevo: "+rs.getString(5));
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void exportarXML() {
+		
+		try {
+			ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "C: && cd C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin &&  mysqldump --xml -uroot -proot gestion_vehiculo > C:\\Users\\ik012982i9\\Desktop\\pruebaXML\\testvehiculos2.xml");
+	        builder.redirectErrorStream(true);
+	        Process p;
+			p = builder.start();
+			System.out.println("XML creado correctamente");
+		}catch (IOException e) {
+			e.printStackTrace();
+		} 
+    }
 }
