@@ -370,12 +370,13 @@ public class Gestor {
 		try {
 			PreparedStatement ps = this.c.prepareCall("CALL consulta_ventas(?,?)");
 			ps.setDate(1,java.sql.Date.valueOf(fecha1));
-			ps.setDate(1,java.sql.Date.valueOf(fecha2));
+			ps.setDate(2,java.sql.Date.valueOf(fecha2));
 			rs = ps.executeQuery();
 			
-			while(rs.next());
+			while(rs.next()) {
 			vc = new Vehiculo(rs.getString(3),rs.getString(7),rs.getString(4),rs.getInt(8),rs.getDouble(9),rs.getInt(10));
 			vehic.add(vc);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -386,7 +387,7 @@ public class Gestor {
 	public void repintadoCoche(Coche v) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement ps = this.c.prepareCall("CALL buscar_color(?)");
+			PreparedStatement ps = this.c.prepareCall("CALL repintado(?)");
 			ps.setString(1,v.getMatricula());
 			rs = ps.executeQuery();
 			
@@ -404,7 +405,7 @@ public class Gestor {
 	public void repintadoCamion(Camion v) {
 		ResultSet rs = null;
 		try {
-			PreparedStatement ps = this.c.prepareCall("CALL buscar_color(?)");
+			PreparedStatement ps = this.c.prepareCall("CALL repintado(?)");
 			ps.setString(1,v.getMatricula());
 			rs = ps.executeQuery();
 			
@@ -412,11 +413,32 @@ public class Gestor {
 				if(rs!=null) {
 					System.out.println("color viejo: "+ rs.getString(4)+", color nuevo: "+rs.getString(5));
 				}
+					
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public ArrayList <Vehiculo> comprobarColores(String color) {
+		ResultSet rs = null;
+		ArrayList <Vehiculo> vehic = new ArrayList<Vehiculo>();
+		Vehiculo vc;
+		try {
+			PreparedStatement ps;
+			ps = this.c.prepareCall("CALL buscar_color(?)");
+			ps.setString(1,color);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				vc = new Vehiculo(rs.getString(1),rs.getString(2),rs.getString(3),rs.getInt(6),rs.getDouble(4),rs.getInt(5));
+				vehic.add(vc);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return vehic;
 	}
 	
 	public void exportarXML() {

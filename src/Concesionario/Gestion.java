@@ -305,12 +305,17 @@ private static void importarCamion(Connection cn) throws SQLException{
 	}
 	
 	public static void verRepintadoCoche(Connection c) {
-		
+		ArrayList <Coche> coches = new ArrayList<Coche>();
 		String matricula;
 		Coche vehiculo;
 		Gestor gs = new Gestor(c);
 		
 		try {
+		coches = cochesStock(c);
+		for(Coche i : coches) {
+			System.out.println(i.toString());
+			System.out.println();
+		}
 		System.out.println("Introduce una matricula");
 		matricula = Console.readString();
 		vehiculo = gs.elegirCoche(matricula);
@@ -320,16 +325,26 @@ private static void importarCamion(Connection cn) throws SQLException{
 			System.out.println("Error");
 		}catch(NullPointerException e) {
 			System.out.println("El coche no existe");
-		}	
+		}catch(SQLException e) {
+			System.out.println("error");
+		}
 	}
 	
-public static void verRepintadoCamion(Connection c) {
-		
+	public static void verRepintadoCamion(Connection c) {
+	
+		ArrayList <Camion> camiones = new ArrayList<Camion>();
 		String matricula;
 		Camion vehiculo;
 		Gestor gs = new Gestor(c);
 		
 		try {
+		camiones = camionesStock(c);
+		
+		for(Camion i: camiones) {
+			System.out.println(i.toString());
+			System.out.println();
+		}
+		
 		System.out.println("Introduce una matricula");
 		matricula = Console.readString();
 		vehiculo = gs.elegirCamion(matricula);
@@ -339,9 +354,23 @@ public static void verRepintadoCamion(Connection c) {
 			System.out.println("Error");
 		}catch(NullPointerException e) {
 			System.out.println("El camion no existe");
+		}catch(SQLException e) {
+			System.out.println("error");
 		}
 	}
 
+	public static void verColores(Connection c) {
+		
+		ArrayList <Vehiculo> vehic = new ArrayList<Vehiculo>();
+		System.out.println("Introduce un color");
+		String color = Console.readString();
+		Gestor gs = new Gestor(c);
+		vehic = gs.comprobarColores(color);
+		
+		for(Vehiculo i : vehic) {
+			System.out.println(i.toString());
+		}
+	}
 	public static void crearXML(Connection c) {
 		Gestor gs = new Gestor(c);
 		gs.exportarXML();
@@ -368,8 +397,9 @@ public static void verRepintadoCamion(Connection c) {
 				System.out.println("5. Modificar datos del vehiculo");
 				System.out.println("6. Ver repintado");
 				System.out.println("7. Consultar ventas");
-				System.out.println("8. Exportar XML");
-				System.out.println("9. Salir");
+				System.out.println("8. Ver vehiculos del mismo color");
+				System.out.println("9. Exportar XML");
+				System.out.println("10. Salir");
 				System.out.println();
 				
 				elec = Console.readInt();
@@ -502,9 +532,13 @@ public static void verRepintadoCamion(Connection c) {
 					ventas(cn);
 					break;
 				case 8:
-					crearXML(cn);
+					verColores(cn);
 					break;
 				case 9:
+					crearXML(cn);
+					break;
+				case 10:
+					System.out.println("PROGRAMA FINALIZADO");
 					break;
 				default:
 					System.out.println("Elección no valida");
@@ -514,7 +548,7 @@ public static void verRepintadoCamion(Connection c) {
 			}
 			
 		
-		}while(elec!=9);
+		}while(elec!=10);
 	}
 
 
