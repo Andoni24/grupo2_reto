@@ -13,28 +13,49 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-
+/**
+ *Clase gestor sirve para hacer las consultas de una bases de datos
+ * 
+ * @version 1.0 06/04/2022
+ * @author Andoni de la Iglesia & Eneko Huarte
+ */
 public class Gestor {
 
 	Connection c;
 	Coche coche;
 	Camion camion;
 	Serie serie;
-	
+/**
+ * 
+ * @param cn conexion de la base de datos
+ * 
+ */
 	public Gestor(Connection cn) {
 		this.c = cn;
 	}
-	
+/**
+ * 
+ * @param cn conexion de la base de datos
+ * @param s una serie 
+ */
 	public Gestor(Connection cn,Serie s) {
 		this.c = cn;
 		this.serie=s;
 	}
-	
+/**
+ * 
+ * @param cn conexion de la base de datos
+ * @param ch un coche
+ */
 	public Gestor (Connection cn, Coche ch) {
 		this.c=cn;
 		this.coche=ch;
 	}
-	
+/**
+ * 
+ * @param cn conexion de la base de datos
+ * @param ch un camion
+ */
 	public Gestor (Connection cn, Camion cmn) {
 		this.c=cn;
 		this.camion=cmn;
@@ -64,7 +85,11 @@ public class Gestor {
 		this.serie = serie;
 	}
 
-	
+/**
+ * Selecciona todas las serie de la base de datos
+ * @return devuelve el resultado de la consulta
+ * @exception SQLException si hay un error en la consulta
+ */
 	public ResultSet selectSerie() {
 		Statement stm = null;
 		ResultSet rs = null;
@@ -79,7 +104,11 @@ public class Gestor {
 		
 		return rs;
 	}
-	
+	/**
+	 * Selecciona todos los coches de la base de datos
+	 * @return devuleve el resultado de la consulta
+	 * @exception SQLException si hay un error en la consulta
+	 */
 	public ResultSet selectCoche() {
 		Statement stm = null;
 		ResultSet rs = null;
@@ -94,7 +123,11 @@ public class Gestor {
 		
 		return rs;
 	}
-	
+	/**
+	 * Selecciona todos los camiones de la base de datos
+	 * @return devuleve el resultado de la consulta
+	 * @exception SQLException si hay un error en la consulta
+	 */
 	public ResultSet selectCamion() {
 		Statement stm = null;
 		ResultSet rs = null;
@@ -108,7 +141,11 @@ public class Gestor {
 		
 		return rs;
 	}
-	
+/**
+ * Verifica si la serie esta creada en la base de datos
+ * @return devuleve true si existe. false si no existe
+ * @exception SQLException si hay un error en la consulta
+ */
 	public boolean verificarSerie() {
 		ResultSet rs = null;
 		boolean existe = false;
@@ -128,7 +165,11 @@ public class Gestor {
 		}
 		return existe;
 	}
-	
+/**
+ * Inserta una serie
+ * @return
+ * @throws SQLException
+ */
 	public String  insertarSerie() throws SQLException{
 		PreparedStatement ps = null;
 		ps = c.prepareStatement("INSERT INTO serie(marca,modelo,anioFabric) VALUES(?,?,?)");
@@ -444,7 +485,7 @@ public class Gestor {
 	public void exportarXML() {
 		
 		try {
-			ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "C: && cd C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin &&  mysqldump --xml -uroot -proot gestion_vehiculo > C:\\Users\\ik012982i9\\Desktop\\pruebaXML\\testvehiculos2.xml");
+			ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "C: && cd C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin && mysqldump --xml --skip-triggers -uroot -proot gestion_vehiculo coche camion serie > C:\\Users\\ik012982i9\\Desktop\\XML.xml");
 	        builder.redirectErrorStream(true);
 	        Process p;
 			p = builder.start();

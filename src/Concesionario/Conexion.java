@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ *Clase Conexion para conectarse a un base de datos
+ * 
+ * @version 1.0 06/04/2022
+ * @author Andoni de la Iglesia & Eneko Huarte
+ */
 public class Conexion {
 		
 		private static final String CONTROLADOR = "com.mysql.jdbc.Driver";
@@ -19,7 +25,11 @@ public class Conexion {
 				e.printStackTrace();
 			}
 		}
-		
+	/**
+	 * 	metodo que se llama para conectarse a la base de datos
+	 * @return devuelve la conexion
+	 * @exception lanza SQLException si no consigue conectarse
+	 */
 		public Connection conectar() {
 			Connection conexion = null;
 			try {
